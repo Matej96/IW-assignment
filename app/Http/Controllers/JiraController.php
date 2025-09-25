@@ -28,10 +28,6 @@ class JiraController extends Controller
         $issueStatuses = $this->jira->getStatuses();
         $currentUser = $this->jira->getCurrentUser();
 
-        foreach ($issues as &$issue) {
-            $issue['comments'] = $this->jira->getComments($issue['key']);
-        }
-
         return view('index', compact(
             'issues',
             'issueTypes',
@@ -64,12 +60,24 @@ class JiraController extends Controller
         return $this->redirectWithResult($result, "Issue $key bolo odstránené.", "Nepodarilo sa odstrániť Issue $key.");
     }
 
+    public function getComments(string $issueKey)
+    {
+        $comments = $this->jira->getComments($issueKey);
+        return response()->json($comments);
+    }
+
     public function storeComment(Request $request, string $issueKey)
     {
         $validated = $request->validate(['body' => 'required|string']);
         $result = $this->jira->addComment($issueKey, $validated['body']);
 
-        return $this->redirectWithResult($result, 'Komentár pridaný.', 'Nepodarilo sa pridať komentár.');
+        if ($result['success'] ?? false) {
+            return response()->json(['success' => true, 'comment' => $result['data'] ?? null]);
+        }
+
+        return response()->json([
+            'success' => false, 'errors' => $result['errors'] ?? ['Nepodarilo sa pridať komentár.']
+        ], 422);
     }
 
     public function updateComment(Request $request, string $issueKey, string $commentId)
@@ -77,8 +85,29 @@ class JiraController extends Controller
         $validated = $request->validate(['body' => 'required|string']);
         $result = $this->jira->updateComment($issueKey, $commentId, $validated['body']);
 
-        return $this->redirectWithResult($result, 'Komentár upravený.', 'Nepodarilo sa upraviť komentár.');
+        if ($result['success'] ?? false) {
+            return response()->json(['success' => true, 'comment' => $result['data'] ?? null]);
+        }
+
+        return response()->json([
+            'success' => false, 'errors' => $result['errors'] ?? ['Nepodarilo sa upraviť komentár.']
+        ], 422);
     }
+
+    public function destroyComment(string $issueKey, string $commentId)
+    {
+        $result = $this->jira->deleteComment($issueKey, $commentId);
+
+        if ($result['success'] ?? false) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'errors' => $result['errors'] ?? ['Nepodarilo sa odstrániť komentár.']
+        ], 422);
+    }
+
 
     /* ---------------------- Helpers ---------------------- */
 

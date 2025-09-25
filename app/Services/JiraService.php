@@ -135,9 +135,21 @@ class JiraService
         ]);
     }
 
+    public function deleteComment(string $issueKey, string $commentId): array
+    {
+        $result = $this->requestWithResult('delete', "/issue/{$issueKey}/comment/{$commentId}");
+
+        return [
+            'success' => $result['success'] ?? false,
+            'errors' => $result['errors'] ?? ($result['data']['errorMessages'] ?? []),
+        ];
+    }
+
+
     public function getComments(string $issueKey): array
     {
         $result = $this->requestWithResult('get', "/issue/{$issueKey}/comment");
+
         return $result['success'] ? ($result['data']['comments'] ?? []) : [];
     }
 
@@ -152,12 +164,14 @@ class JiraService
     public function getStatuses(): array
     {
         $result = $this->requestWithResult('get', '/status');
+
         return $result['success'] ? ($result['data'] ?? []) : [];
     }
 
     public function getCurrentUser(): array
     {
         $result = $this->requestWithResult('get', '/myself');
+
         return $result['success'] ? ($result['data'] ?? []) : [];
     }
 }

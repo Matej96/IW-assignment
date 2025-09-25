@@ -8,8 +8,10 @@
 
                 @if($isReporter)
                     <div class="d-flex gap-1">
-                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-                                data-bs-target="#commentsModal-{{ $issue['key'] }}">
+                        <button class="btn btn-sm btn-outline-secondary load-comments-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#commentsModal-{{ $issue['key'] }}"
+                                data-issue-key="{{ $issue['key'] }}">
                             <i class="bi bi-chat-left-text"></i>
                         </button>
 
@@ -46,6 +48,6 @@
         </div>
     </div>
 
-    <x-issue-comments-modal :issue="$issue" :description="$description" />
+    <x-issue-comments-modal :issue="$issue" :description="$description" :currentUser="$currentUser" />
     <x-issue-edit-modal :issue="$issue" :description="$description" :issueTypes="$issueTypes" />
 </div>
