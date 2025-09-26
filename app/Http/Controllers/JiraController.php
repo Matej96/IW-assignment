@@ -14,29 +14,36 @@ class JiraController extends Controller
         $this->jira = $jira;
     }
 
-    public function index(Request $request)
+    private function fetchIssuesData($pageToken = null)
     {
-        $pageToken = $request->query('pageToken');
-
         $result = $this->jira->getAllIssues('IT', 9, $pageToken);
 
-        $issues = $result['issues'];
-        $nextPageToken = $result['nextPageToken'];
-        $isLast = $result['isLast'];
-
-        $issueTypes = $this->jira->getIssueTypes();
-        $issueStatuses = $this->jira->getStatuses();
-        $currentUser = $this->jira->getCurrentUser();
-
-        return view('index', compact(
-            'issues',
-            'issueTypes',
-            'issueStatuses',
-            'currentUser',
-            'nextPageToken',
-            'isLast'
-        ));
+        return [
+            'issues' => $result['issues'],
+            'nextPageToken' => $result['nextPageToken'],
+            'isLast' => $result['isLast'],
+            'issueTypes' => $this->jira->getIssueTypes(),
+            'currentUser' => $this->jira->getCurrentUser(),
+        ];
     }
+
+    public function index(Request $request)
+    {
+        $data = $this->fetchIssuesData($request->query('pageToken'));
+        return view('index', $data);
+    }
+
+    public function loadMore(Request $request)
+    {
+        $data = $this->fetchIssuesData($request->query('pageToken'));
+        return response()->json([
+            'html' => view('partials.issues', $data)->render(),
+            'nextPageToken' => $data['nextPageToken'],
+            'isLast' => $data['isLast'],
+        ]);
+    }
+
+
 
     public function store(Request $request)
     {

@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <div id="comments-container-{{ $issue['key'] }}"></div>
                 <hr>
-                <form id="add-comment-form-{{ $issue['key'] }}">
+                <form id="add-comment-form-{{ $issue['key'] }}" data-issue-key="{{ $issue['key'] }}">
                     @csrf
                     <textarea name="body" class="form-control mb-1" rows="2" placeholder="Pridať komentár..."></textarea>
                     <button type="submit" class="btn btn-sm btn-success">Pridať</button>

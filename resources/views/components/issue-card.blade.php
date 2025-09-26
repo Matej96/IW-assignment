@@ -43,11 +43,11 @@
 
             <p class="card-text mb-1">Zadávatel: {{ $issue['fields']['reporter']['displayName'] ?? 'N/A' }}</p>
             <p class="card-text text-muted" style="font-size: 0.85rem;">
-                Vytvorené: {{ \Carbon\Carbon::parse($issue['fields']['created'])->format('d.m.Y H:i') }}
+                Vytvořené: {{ \Carbon\Carbon::parse($issue['fields']['created'])->format('d.m.Y H:i') }}
             </p>
         </div>
     </div>
 
     <x-issue-comments-modal :issue="$issue" :description="$description" :currentUser="$currentUser" />
-    <x-issue-edit-modal :issue="$issue" :description="$description" :issueTypes="$issueTypes" />
+    <x-issue-edit-modal :issue="$issue" :description="$description" :issueTypes="$issueTypes" :issueStatuses="$issueStatuses"/>
 </div>
