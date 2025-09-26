@@ -129,6 +129,10 @@
                     textarea.value = '';
                     const comment = data.comment;
                     const isAuthor = comment.author.accountId === '{{ $currentUser["accountId"] }}';
+
+                    const placeholder = commentsContainer.querySelector('p.text-muted');
+                    if (placeholder) placeholder.remove();
+
                     const div = document.createElement('div');
                     div.classList.add('mb-3');
                     div.dataset.commentId = comment.id;

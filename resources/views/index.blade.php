@@ -24,7 +24,7 @@
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="issues-container">
-        @include('partials.issues', compact('issues', 'issueTypes', 'issueStatuses', 'currentUser'))
+        @include('partials.issues', compact('issues', 'issueTypes', 'currentUser'))
     </div>
 
     @if(!$isLast && $nextPageToken)

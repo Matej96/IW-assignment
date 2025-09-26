@@ -49,5 +49,5 @@
     </div>
 
     <x-issue-comments-modal :issue="$issue" :description="$description" :currentUser="$currentUser" />
-    <x-issue-edit-modal :issue="$issue" :description="$description" :issueTypes="$issueTypes" :issueStatuses="$issueStatuses"/>
+    <x-issue-edit-modal :issue="$issue" :description="$description" :issueTypes="$issueTypes" />
 </div>
